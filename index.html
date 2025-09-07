@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REYYXRIKKA STORE - Premium Pterodactyl Panel Hosting</title>
+    <link rel="icon" href="https://files.catbox.moe/vlyx7l.jpeg" type="image/jpg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --lighter: #ffffff;
+            --tech-glow: rgba(99, 102, 241, 0.3);
+            --whatsapp: #25D366;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #020617, #0f172a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loading-logo {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+        }
+        
+        .loading-logo-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .loading-logo-inner::before,
+        .loading-logo-inner::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid transparent;
+        }
+        
+        .loading-logo-inner::before {
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border-top-color: #8b5cf6;
+            animation: spin 2s linear infinite reverse;
+        }
+        
+        .loading-logo-inner::after {
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 25px;
+            border-top-color: #6366f1;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #8b5cf6, #6366f1, #3b82f6, #8b5cf6);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: gradient 3s linear infinite, pulse 2s ease-in-out infinite alternate;
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .loading-text::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #6366f1, transparent);
+            border-radius: 100%;
+            filter: blur(1px);
+        }
+        
+        .loading-subtext {
+            color: #94a3b8;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+            text-align: center;
+            max-width: 500px;
+            opacity: 0.8;
+        }
+        
+        .progress-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8b5cf6, #6366f1);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            background-image: 
+                radial-gradient(circle at 25% 25%, var(--tech-glow) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, var(--tech-glow) 0%, transparent 50%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 50px;
+            width: 50px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .logo:hover img {
+            transform: rotate(15deg);
+            box-shadow: 0 0 30px var(--primary);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #8b5cf6, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1rem;
+        }
+        
+        .nav-links a:hover {
+            color: #8b5cf6;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #8b5cf6, var(--primary));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 5rem 0 3rem;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #8b5cf6, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            font-size: 1rem;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, var(--primary-dark), #7c3aed);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            margin-left: 1rem;
+        }
+        
+        .btn-outline:hover {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .product-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, transparent 70%);
+            transform: rotate(30deg);
+            transition: all 0.8s ease;
+            z-index: -1;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+        }
+        
+        .product-card:hover::before {
+            transform: rotate(60deg);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            margin-bottom: 1.5rem;
+            border-radius: 7px;
+            border: 2px solid var(--glass-border);
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 1px;
+        }
+        
+        .product-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+            font-weight: 700;
+        }
+        
+        .product-card .price {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 1.5rem 0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .product-card .price span {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        
+        .product-card .specs {
+            list-style: none;
+            margin: 2rem 0;
+        }
+        
+        .product-card .specs li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+        
+        .product-card .specs li i {
+            color: var(--primary);
+            font-size: 1rem;
+            min-width: 20px;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--warning), var(--danger));
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .badge.promo {
+            background: linear-gradient(135deg, var(--success), #3b82f6);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge.popular {
+            background: linear-gradient(135deg, #3b82f6, var(--primary));
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-whatsapp {
+            background-color: var(--whatsapp);
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(18, 140, 126, 0.4);
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--whatsapp);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 20px rgba(18, 140, 126, 0.4);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .whatsapp-float:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 10px 30px rgba(18, 140, 126, 0.5);
+        }
+        
+        /* Order History Styles */
+        .order-history {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 4rem;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .order-history h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #e2e8f0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .order-history h2 i {
+            color: var(--primary);
+        }
+        
+        .orders-list {
+            list-style: none;
+        }
+        
+        .order-item {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .order-info {
+            flex: 1;
+        }
+        
+        .order-product {
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 0.3rem;
+        }
+        
+        .order-price {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .order-date {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        .clear-orders {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .clear-orders:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            border-top: 1px solid var(--glass-border);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* New Order Form Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .order-form {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+        
+        .modal-overlay.active .order-form {
+            transform: translateY(0);
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-header h3 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #8b5cf6, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: #f8fafc;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-control::placeholder {
+            color: #64748b;
+        }
+        
+        .order-summary {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.7rem;
+            color: #cbd5e1;
+        }
+        
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .summary-label {
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            font-weight: 600;
+        }
+        
+        .summary-price {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--success), #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+            margin-top: 1rem;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #0da271, #2563eb);
+        }
+        
+        .btn-submit i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h2 {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .nav-links {
+                gap: 1.5rem;
+            }
+            
+            .hero {
+                padding: 3rem 0;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+            }
+            
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                bottom: 1.5rem;
+                right: 1.5rem;
+            }
+            
+            .order-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .loading-text {
+                font-size: 2.5rem;
+            }
+            
+            .loading-subtext {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .progress-bar {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .product-image {
+                height: 238px;
+            }
+            
+            .loading-text {
+                font-size: 2rem;
+            }
+            
+            .loading-subtext {
+                font-size: 0.9rem;
+            }
+            
+            .progress-bar {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <div class="loading-logo-inner"></div>
+        </div>
+        <div class="loading-text">REYYXRIKKA STORE</div>
+        <div class="loading-subtext">Premium Pterodactyl Panel Hosting Solutions</div>
+        <div class="progress-bar">
+            <div class="progress" id="loadingProgress"></div>
+        </div>
+    </div>
+
+    <!-- Order Form Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="order-form">
+            <div class="form-header">
+                <h3>Pesan Sekarang</h3>
+                <button class="close-btn" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <input type="text" id="name" class="form-control" placeholder="Masukkan nama lengkap" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="Masukkan email aktif" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Nomor WhatsApp</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Contoh: 6288294088731" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Catatan Tambahan</label>
+                    <textarea id="notes" class="form-control" placeholder="Spesifikasi khusus, nama domain, dll." rows="3"></textarea>
+                </div>
+                
+                <div class="order-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Produk:</span>
+                        <span class="summary-value" id="summary-product">Basic Plan</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Harga:</span>
+                        <span class="summary-value summary-price" id="summary-price">Rp 50.000</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Durasi:</span>
+                        <span class="summary-value" id="summary-duration">1 Bulan</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">
+                    <i class="fab fa-whatsapp"></i> Lanjutkan ke WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <a href="#" class="logo">
+                <img src="https://files.catbox.moe/vlyx7l.jpeg" alt="JOJOSHOP Logo">
+                <h1>REYYXRIKKA STORE</h1>
+            </a>
+            <nav class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Beranda</a>
+                <a href="#products"><i class="fas fa-box"></i> Produk</a>
+                <a href="#"><i class="fas fa-info-circle"></i> Tentang</a>
+                <a href="#"><i class="fas fa-headset"></i> Kontak</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <h2>Premium Pterodactyl Panel Hosting</h2>
+            <p>Nikmati pengalaman hosting terbaik dengan panel Pterodactyl berkinerja tinggi. Solusi sempurna untuk server game dan aplikasi Anda dengan harga terjangkau.</p>
+            <div class="btn-group">
+                <a href="#products" class="btn"><i class="fas fa-shopping-cart"></i> Lihat Paket</a>
+                <a href="#" class="btn btn-outline"><i class="fas fa-question-circle"></i> Tanya Admin</a>
+            </div>
+        </section>
+
+        <section class="products" id="products">
+            <!-- RAM 1GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="1GB RAM Panel" class="product-image">
+                <h3>RAM 1GB</h3>
+                <div class="price">Rp 1.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 1GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 1GB RAM" data-price="Rp 1.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+            
+            <!-- RAM 2GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="2GB RAM Panel" class="product-image">
+                <h3>RAM 2GB</h3>
+                <div class="price">Rp 2.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 2GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 2GB RAM" data-price="Rp 1.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 3GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="3GB RAM Panel" class="product-image">
+                <h3>RAM 3GB</h3>
+                <div class="price">Rp 3.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 3GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 3GB RAM" data-price="Rp 3.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 4GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="4GB RAM Panel" class="product-image">
+                <h3>RAM 4GB</h3>
+                <div class="price">Rp 4.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 4GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 4GB RAM" data-price="Rp 4.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 5GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="5GB RAM Panel" class="product-image">
+                <h3>RAM 5GB</h3>
+                <div class="price">Rp 5.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 5GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 5GB RAM" data-price="Rp 5.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 6GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="6GB RAM Panel" class="product-image">
+                <h3>RAM 6GB</h3>
+                <div class="price">Rp 6.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 6GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 6GB RAM" data-price="Rp 6.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 7GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="7GB RAM Panel" class="product-image">
+                <h3>RAM 7GB</h3>
+                <div class="price">Rp 7.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 7GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 7GB RAM" data-price="Rp 7.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 8GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="8GB RAM Panel" class="product-image">
+                <h3>RAM 8GB</h3>
+                <div class="price">Rp 8.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 8GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 8GB RAM" data-price="Rp 8.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM 9GB -->
+            <div class="product-card">
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="9GB RAM Panel" class="product-image">
+                <h3>RAM 9GB</h3>
+                <div class="price">Rp 9.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> 9GB Dedicated RAM</li>
+                    <li><i class="fas fa-microchip"></i> High Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl 9GB RAM" data-price="Rp 9.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- RAM UNLIMITED -->
+            <div class="product-card">
+                 <img src="https://files.catbox.moe/ld1o34.jpg" alt="UNLIMITED RAM Panel" class="product-image">
+                <h3>RAM UNLIMITED</h3>
+                <div class="price">Rp 12.000 <span>/month</span></div>
+                <ul class="specs">
+                    <li><i class="fas fa-memory"></i> UNLIMITED RAM</li>
+                    <li><i class="fas fa-microchip"></i> Maximum Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> Premium DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access 1 bulan</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="Panel Pterodactyl UNLIMITED RAM" data-price="Rp 12.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+
+            <!-- ADMIN PANEL-->
+            <div class="product-card">
+                <div class="badge popular">Promo</div>
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="UNLIMITED RAM Panel" class="product-image">
+                <h3>ADMIN PANEL</h3>
+                <div class="price">Rp 14.000 <span>/Permanent</span></div>
+                <ul class="specs">
+                     <li><i class="fas fa-microchip"></i> Maximum Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> Premium DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="ADMIN PANEL PTERODACTYL" data-price="Rp 14.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+            
+            <!-- PT PANEL-->
+            <div class="product-card">
+                <div class="badge popular">Promo</div>
+                <img src="https://files.catbox.moe/ld1o34.jpg" alt="UNLIMITED RAM Panel" class="product-image">
+                <h3>PT PANEL</h3>
+                <div class="price">Rp 17.000 <span>/Permanent</span></div>
+                <ul class="specs">
+                     <li><i class="fas fa-microchip"></i> Maximum Performance</li>
+                    <li><i class="fas fa-shield-alt"></i> Premium DDoS Protection</li>
+                    <li><i class="fas fa-rocket"></i> Access Permanent</li>
+                </ul>
+                <a href="#" class="btn btn-whatsapp" data-product="PT PANEL PTERODACTYL" data-price="Rp 17.000">
+                    <i class="fab fa-whatsapp"></i> Order Via WhatsApp
+                </a>
+            </div>
+            
+        </section>
+        
+        <div class="whatsapp-float">
+            <a href="https://wa.me/6288294088731" target="_blank" style="color: white;">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+        
+        <footer>
+            <p>&copy; 2023 REYYXRIKKA STORE - Premium Pterodactyl Panel Hosting. All rights reserved.</p>
+            <p>Designed with <i class="fas fa-heart" style="color: #ef4444;"></i> for gamers and developers</p>
+        </footer>
+    </div>
+
+    <script>
+        // Loading screen simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const progressBar = document.getElementById('loadingProgress');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingScreen.classList.add('hidden');
+                    }, 500);
+                }
+                progressBar.style.width = progress + '%';
+            }, 200);
+        });
+
+        // Order form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderModal = document.getElementById('orderModal');
+            const closeModal = document.getElementById('closeModal');
+            const orderForm = document.getElementById('orderForm');
+            const summaryProduct = document.getElementById('summary-product');
+            const summaryPrice = document.getElementById('summary-price');
+            const summaryDuration = document.getElementById('summary-duration');
+            
+            // Store selected product info
+            let selectedProduct = null;
+            
+            // Function to open order modal with product info
+            function openOrderModal(productName, productPrice, productDuration) {
+                selectedProduct = {
+                    name: productName,
+                    price: productPrice,
+                    duration: productDuration
+                };
+                
+                summaryProduct.textContent = productName;
+                summaryPrice.textContent = productPrice;
+                summaryDuration.textContent = productDuration;
+                
+                orderModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            }
+            
+            // Function to close modal
+            function closeOrderModal() {
+                orderModal.classList.remove('active');
+                document.body.style.overflow = ''; // Enable scrolling
+            }
+            
+            // Add event listeners to order buttons
+            document.querySelectorAll('.btn-whatsapp').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const productName = this.getAttribute('data-product');
+                    const productPrice = this.getAttribute('data-price');
+                    const productDuration = '1 Bulan'; // Default duration
+                    
+                    openOrderModal(productName, productPrice, productDuration);
+                });
+            });
+            
+            // Close modal when clicking close button or outside modal
+            closeModal.addEventListener('click', closeOrderModal);
+            orderModal.addEventListener('click', function(e) {
+                if (e.target === orderModal) {
+                    closeOrderModal();
+                }
+            });
+            
+            // Handle form submission
+            orderForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const notes = document.getElementById('notes').value;
+                
+                // Create WhatsApp message
+                const message = `Halo JOJOSHOP, saya ingin memesan hosting:\n\n` +
+                               `*Produk:* ${selectedProduct.name}\n` +
+                               `*Harga:* ${selectedProduct.price}\n` +
+                               `*Durasi:* ${selectedProduct.duration}\n\n` +
+                               `*Nama:* ${name}\n` +
+                               `*Email:* ${email}\n` +
+                               `*WhatsApp:* ${phone}\n\n` +
+                               `*Catatan Tambahan:*\n${notes || 'Tidak ada catatan'}\n\n` +
+                               `Saya ingin melanjutkan pembayaran.`;
+                
+                // Encode message for URL
+                const encodedMessage = encodeURIComponent(message);
+                
+                // Create WhatsApp URL
+                const whatsappUrl = `https://wa.me/6288294088731?text=${encodedMessage}`;
+                
+                // Close modal
+                closeOrderModal();
+                
+                // Open WhatsApp
+                setTimeout(() => {
+                    window.open(whatsappUrl, '_blank');
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html> 
